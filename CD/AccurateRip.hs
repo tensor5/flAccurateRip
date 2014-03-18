@@ -3,6 +3,7 @@
 module CD.AccurateRip where
 
 import           CD.CDDB
+import           Control.Monad   (liftM)
 import           Data.Binary
 import           Data.Binary.Get
 import           Data.Binary.Put
@@ -36,7 +37,7 @@ instance Binary ArCrcEntry where
       i1 <- get
       i2 <- get
       i3 <- get
-      cs <- mapM (\_ -> getTrackCRCs) [1..l]
+      cs <- mapM (const getTrackCRCs) [1..l]
       return $ ArCrcEntry i1 i2 i3 cs
         where getTrackCRCs = do c <- getWord8
                                 s <- get
@@ -44,9 +45,9 @@ instance Binary ArCrcEntry where
                                 return (c,s)
 
 instance Show ArCrcEntry where
-    show (ArCrcEntry w1 w2 w3 xs) = "ID: " ++ (show w1) ++ "-" ++
-                                    (show w2) ++ "-" ++
-                                    (show w3) ++ "\n\n" ++
+    show (ArCrcEntry w1 w2 w3 xs) = "ID: " ++ show w1 ++ "-" ++
+                                    show w2 ++ "-" ++
+                                    show w3 ++ "\n\n" ++
                                     showEntry
         where showEntry = concat $ zipWith f [(1::Int)..] xs
               f i (c,s) | c == 0 && s == DiscID 0 = "track " ++ show i ++
@@ -58,7 +59,7 @@ instance Show ArCrcEntry where
 
 showArCrcEntry :: ArCrcEntry -> String
 showArCrcEntry (ArCrcEntry w1 w2 w3 xs) =
-    (show w1) ++ "-" ++ (show w2) ++ "-" ++ (show w3)
+    show w1 ++ "-" ++ show w2 ++ "-" ++ show w3
                   ++ "\n" ++ "Track No.\tChecksum\tAccuracy" ++ "\n\n" ++
                   showEntry
         where showEntry = concat $ zipWith f [(1::Int)..] xs
@@ -73,13 +74,13 @@ newtype ArData = ArData {unArData :: [ArCrcEntry]}
 
 instance Binary ArData where
     put (ArData ents) = mapM_ put ents
-    get = getList >>= return . ArData
+    get = liftM ArData getList
         where getList = do b <- isEmpty
-                           case b of
-                             True -> return []
-                             False -> do a <- get
-                                         as <- getList
-                                         return (a:as)
+                           if b
+                             then return []
+                             else do a <- get
+                                     as <- getList
+                                     return (a:as)
 
 instance Show ArData where
     showsPrec _ (ArData []) = id
@@ -112,11 +113,11 @@ data RipHash = RipHash {
 matchPressing :: ArData -> RipHash -> (Maybe [Word8], Maybe [Word8])
 matchPressing (ArData ardata) hash = let cs = map trackCRCs ardata
                                      in (matchV1 cs, matchV2 cs)
-    where matchV1 xs = let a = find (\ys -> (snd $ unzip ys) == v1Sums) xs
+    where matchV1 xs = let a = find (\ys -> snd (unzip ys) == v1Sums) xs
                        in case a of
                             Just zs -> Just $ fst $ unzip zs
                             Nothing -> Nothing
-          matchV2 xs = let a = find (\ys -> (snd $ unzip ys) == v2Sums) xs
+          matchV2 xs = let a = find (\ys -> snd (unzip ys) == v2Sums) xs
                        in case a of
                             Just zs -> Just $ fst $ unzip zs
                             Nothing -> Nothing
@@ -126,7 +127,7 @@ matchPressing (ArData ardata) hash = let cs = map trackCRCs ardata
 verifyTracks :: ArData -> RipHash -> [(Word,Word)]
 verifyTracks (ArData ardata) (RipHash i1 i2 i3 csum) =
     zipWith (trackConf (filter p ardata)) [0..length csum - 1] csum
-    where trackConf ents i = go (map (\e -> (trackCRCs e)!!i) ents) (0,0)
+    where trackConf ents i = go (map (\e -> trackCRCs e !! i) ents) (0,0)
           go []         (a1,a2) _       = (a1,a2)
           go ((c,s):xs) (a1,a2) (v1,v2) =
               go xs (a1 + fromIntegral (if v1 == s then c else 0), a2 + fromIntegral (if v2 == s then c else 0)) (v1,v2)
@@ -164,15 +165,15 @@ discId2 xs = DiscID $ toEnum $ sum $ zipWith (*) (1:xs) [1..n+1]
 
 arUrl :: [Int] -> String
 arUrl xs = "http://www.accuraterip.com/accuraterip/" ++
-      	   ((show $ discId1 xs)!!7) : '/' :
-           ((show $ discId1 xs)!!6) : '/' :
-           ((show $ discId1 xs)!!5) : "/dBAR-" ++
-           (addZeros 3 $ show (length xs)) ++
-           '-' : (show $ discId1 xs) ++
-           '-' : (show $ discId2 xs) ++
-           '-' : (show $ cddbDiscId xs) ++
+      	   (show (discId1 xs)!!7) : '/' :
+           (show (discId1 xs)!!6) : '/' :
+           (show (discId1 xs)!!5) : "/dBAR-" ++
+           addZeros 3 (show (length xs)) ++
+           '-' : show (discId1 xs) ++
+           '-' : show (discId2 xs) ++
+           '-' : show (cddbDiscId xs) ++
            ".bin"
-    where addZeros n s = if (length s) >= n
+    where addZeros n s = if length s >= n
 	       		 then s
 			 else addZeros n ('0':s)
 
@@ -251,8 +252,8 @@ zeroEnd :: Int -> [Sample] -> [Sample]
 zeroEnd l = zipWith (\i x -> if i >= l - droppedSamples then 0 else x) [0..]
 
 applyOff :: Int -> [Sample] -> [Sample]
-applyOff off dat | off >= 0 = (drop off dat) ++ (replicate off 0)
-                 | otherwise = (replicate off 0) ++ dat
+applyOff off dat | off >= 0 = drop off dat ++ replicate off 0
+                 | otherwise = replicate off 0 ++ dat
 
 crc :: [Sample] -> CRC
 --crc = foldl1' (+) . zipWith (*) [1..]
@@ -266,16 +267,16 @@ crcv2 = DiscID . go 0 1
           go !acc !n (x:xs) = go (acc + f n x) (n+1) xs
           f :: Word64 -> Sample -> Word32
           f n x = let a = n * fromIntegral x
-                  in (fromIntegral (a .&. 0xFFFFFFFF)) +
-                     (fromIntegral $ shiftR (a .&. 0xFFFFFFFF00000000) 32)
+                  in fromIntegral (a .&. 0xFFFFFFFF) +
+                     fromIntegral (shiftR (a .&. 0xFFFFFFFF00000000) 32)
 
 pairCrc :: [Sample] -> (CRC,CRC)
 pairCrc = go (0,0) 1
     where go (a1,a2)  _  [] = (DiscID a1, DiscID a2)
           go (!a1,!a2) !n (x:xs) = go (a1 + n*x, a2 + f n x) (n+1) xs
           f n x = let a = fromIntegral n * fromIntegral x :: Word64
-                  in (fromIntegral (a .&. 0xFFFFFFFF)) +
-                     (fromIntegral $ shiftR (a .&. 0xFFFFFFFF00000000) 32)
+                  in fromIntegral (a .&. 0xFFFFFFFF) +
+                     fromIntegral (shiftR (a .&. 0xFFFFFFFF00000000) 32)
 
 listPairCrcs :: Int -> [Int] -> [Sample] -> [(CRC,CRC)]
 listPairCrcs off ls = map pairCrc . chunks ls . zeroEnd (sum ls) .

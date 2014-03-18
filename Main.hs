@@ -71,11 +71,11 @@ lengthsToOffsets = scanl1 (+)
 offsetsToLengths :: Num a => [a] -> [a]
 offsetsToLengths [] = []
 offsetsToLengths [x] = [x]
-offsetsToLengths xs = (offsetsToLengths $ i) ++ [(last xs) - (last i)]
+offsetsToLengths xs = offsetsToLengths i ++ [last xs - last i]
     where i = init xs
 
 
-getFlacSampleNumber :: FilePath -> IO (Int)
+getFlacSampleNumber :: FilePath -> IO Int
 getFlacSampleNumber file = do
   (_,b, _) <- readProcessWithExitCode
               "metaflac"
@@ -84,7 +84,7 @@ getFlacSampleNumber file = do
   return (read b)
 
 
-getOffsetsFromFlacs :: [FilePath] -> IO ([Int])
+getOffsetsFromFlacs :: [FilePath] -> IO [Int]
 getOffsetsFromFlacs [file] = do
   (a,_,_) <- readProcessWithExitCode
              "metaflac"
@@ -100,7 +100,7 @@ getOffsetsFromFlacs [file] = do
       return [quot l samplesPerSector]
 getOffsetsFromFlacs filelist = do
   s <- mapM getFlacSampleNumber filelist
-  return $ lengthsToOffsets (map (\a -> quot a samplesPerSector) s)
+  return $ lengthsToOffsets (map (`quot` samplesPerSector) s)
 
 
 
@@ -108,12 +108,12 @@ getOffsetsFromFlacs filelist = do
 stringToWord32List :: String -> [Word32]
 stringToWord32List [] = []
 stringToWord32List (x1:x2:x3:x4:xs) =
-    (fourCharToWord32 x1 x2 x3 x4):stringToWord32List xs
+    fourCharToWord32 x1 x2 x3 x4 : stringToWord32List xs
   where fourCharToWord32 c1 c2 c3 c4 =
-            (fromIntegral $ fromEnum c1) +
-            (fromIntegral $ fromEnum c2) `shiftL` 8 +
-            (fromIntegral $ fromEnum c3) `shiftL` 16 +
-            (fromIntegral $ fromEnum c4) `shiftL` 24
+            fromIntegral (fromEnum c1) +
+            fromIntegral (fromEnum c2) `shiftL` 8 +
+            fromIntegral (fromEnum c3) `shiftL` 16 +
+            fromIntegral (fromEnum c4) `shiftL` 24
 stringToWord32List _ = error "stringToWord32List: length of String should be \
                              \divisible by 4."
 
@@ -182,7 +182,7 @@ main = do
                        putStrLn $ showArData ardata
                else do putStrLn ("Found " ++ show n ++ " pressings:\n")
                        putStrLn $ showArData ardata
-         let offset = (optOffset opts) + 30*(fromEnum $ opt30Samples opts)
+         let offset = optOffset opts + 30 * fromEnum (opt30Samples opts)
          putStr "Computing track checksums from input files"
          whenLoud $ putStr (" (using " ++ show offset ++ " samples offset)")
          putStrLn "..."
@@ -192,7 +192,7 @@ main = do
          let cs = listPairCrcs offset
                   (map (\n -> samplesPerSector * n) (offsetsToLengths list))
                   (stringToWord32List str)
-         (\x -> showAccuracy ardata
-                (RipHash (discId1 list) (discId2 list) (cddbDiscId list) x))
+         (showAccuracy ardata .
+          RipHash (discId1 list) (discId2 list) (cddbDiscId list))
            $!! cs
          hClose a

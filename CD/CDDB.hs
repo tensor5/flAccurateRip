@@ -3,6 +3,7 @@
 module CD.CDDB where
 
 import           Control.DeepSeq
+import           Control.Monad   (liftM)
 import           Data.Binary
 import           Data.Binary.Get
 import           Data.Binary.Put
@@ -14,18 +15,19 @@ newtype DiscID = DiscID Word32
 
 instance Binary DiscID where
     put (DiscID w) = putWord32le w
-    get = getWord32le >>= return . DiscID
+    get = liftM DiscID getWord32le
 
 instance Show DiscID where
     show (DiscID w) =
-        (intToDigit $ fromIntegral ((shiftR w 28) .&. 15)) :
-        (intToDigit $ fromIntegral ((shiftR w 24) .&. 15)) :
-        (intToDigit $ fromIntegral ((shiftR w 20) .&. 15)) :
-        (intToDigit $ fromIntegral ((shiftR w 16) .&. 15)) :
-        (intToDigit $ fromIntegral ((shiftR w 12) .&. 15)) :
-        (intToDigit $ fromIntegral ((shiftR w 8) .&. 15)) :
-        (intToDigit $ fromIntegral ((shiftR w 4) .&. 15)) :
-        (intToDigit $ fromIntegral (w .&. 15)) : []
+        [ intToDigit (fromIntegral (shiftR w 28 .&. 15))
+        , intToDigit (fromIntegral (shiftR w 24 .&. 15))
+        , intToDigit (fromIntegral (shiftR w 20 .&. 15))
+        , intToDigit (fromIntegral (shiftR w 16 .&. 15))
+        , intToDigit (fromIntegral (shiftR w 12 .&. 15))
+        , intToDigit (fromIntegral (shiftR w 8 .&. 15))
+        , intToDigit (fromIntegral (shiftR w 4 .&. 15))
+        , intToDigit (fromIntegral (w .&. 15))
+        ]
 
 -- |Calculate CDDB DiscID: the result is XXYYYYZZ where XX is the number of tracks, YYYY is the total length of the CD is seconds, and ZZ is ...
 cddbDiscId :: [Int] -> DiscID
