@@ -1,19 +1,19 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-import CD.AccurateRip
-import CD.CDDB
-import Control.DeepSeq
-import Control.Monad
-import Data.Binary
-import Data.Bits
-import Data.String
-import Data.Version
-import Network.HTTP
-import System.Console.CmdArgs
-import System.IO
-import System.Environment
-import System.Exit
-import System.Process
+import           CD.AccurateRip
+import           CD.CDDB
+import           Control.DeepSeq
+import           Control.Monad
+import           Data.Binary
+import           Data.Bits
+import           Data.String
+import           Data.Version
+import           Network.HTTP
+import           System.Console.CmdArgs
+import           System.Environment
+import           System.Exit
+import           System.IO
+import           System.Process
 
 
 progName :: String
@@ -35,10 +35,10 @@ intro = progName ++ " " ++ showVersion version ++
         \There is NO WARRANTY, to the extent permitted by law."
 
 data Options = Options
-    { optOffset     :: Int
-    , opt30Samples  :: Bool
-    , optShowEntry  :: Bool
-    , optFiles      :: [String]
+    { optOffset    :: Int
+    , opt30Samples :: Bool
+    , optShowEntry :: Bool
+    , optFiles     :: [String]
     } deriving (Data, Typeable)
 
 options :: Options
@@ -107,9 +107,9 @@ getOffsetsFromFlacs filelist = do
 
 stringToWord32List :: String -> [Word32]
 stringToWord32List [] = []
-stringToWord32List (x1:x2:x3:x4:xs) = 
+stringToWord32List (x1:x2:x3:x4:xs) =
     (fourCharToWord32 x1 x2 x3 x4):stringToWord32List xs
-  where fourCharToWord32 c1 c2 c3 c4 = 
+  where fourCharToWord32 c1 c2 c3 c4 =
             (fromIntegral $ fromEnum c1) +
             (fromIntegral $ fromEnum c2) `shiftL` 8 +
             (fromIntegral $ fromEnum c3) `shiftL` 16 +

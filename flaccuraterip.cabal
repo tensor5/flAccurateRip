@@ -27,7 +27,8 @@ Description:
   the flag @--sample-offset=N@, where N is the offset indicated in
   <http://accuraterip.com/driveoffsets.htm> for your drive.
 
-Category:       Sound
+Category:            Sound
+Extra-Source-Files:  .stylish-haskell.yaml
 
 Source-Repository head
   Type:      git

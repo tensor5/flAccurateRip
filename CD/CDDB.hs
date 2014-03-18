@@ -2,12 +2,12 @@
 
 module CD.CDDB where
 
-import Control.DeepSeq
-import Data.Binary
-import Data.Binary.Get
-import Data.Binary.Put
-import Data.Bits
-import Data.Char
+import           Control.DeepSeq
+import           Data.Binary
+import           Data.Binary.Get
+import           Data.Binary.Put
+import           Data.Bits
+import           Data.Char
 
 newtype DiscID = DiscID Word32
     deriving (Eq, NFData)
@@ -17,7 +17,7 @@ instance Binary DiscID where
     get = getWord32le >>= return . DiscID
 
 instance Show DiscID where
-    show (DiscID w) = 
+    show (DiscID w) =
         (intToDigit $ fromIntegral ((shiftR w 28) .&. 15)) :
         (intToDigit $ fromIntegral ((shiftR w 24) .&. 15)) :
         (intToDigit $ fromIntegral ((shiftR w 20) .&. 15)) :

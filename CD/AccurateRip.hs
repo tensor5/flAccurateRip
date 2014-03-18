@@ -1,22 +1,22 @@
 {-# LANGUAGE BangPatterns #-}
 
-module CD.AccurateRip where     
+module CD.AccurateRip where
 
-import CD.CDDB
-import Data.Binary
-import Data.Binary.Get
-import Data.Binary.Put
-import Data.Bits
-import Data.List (find)
+import           CD.CDDB
+import           Data.Binary
+import           Data.Binary.Get
+import           Data.Binary.Put
+import           Data.Bits
+import           Data.List       (find)
 
 type Sample = Word32
 
 type CRC = DiscID
 
 data ArCrcEntry = ArCrcEntry {
-      id1 :: DiscID,
-      id2 :: DiscID,
-      cddb :: DiscID,
+      id1       :: DiscID,
+      id2       :: DiscID,
+      cddb      :: DiscID,
       trackCRCs :: [(Word8,CRC)]  -- (confidence,crc)
     }
 
@@ -103,10 +103,10 @@ showArResult NotAccuratelyRipped  = "not accurately ripped"
 showArResult NotPresent           = "not present in the database"
 -}
 data RipHash = RipHash {
-      ripId1 :: DiscID,
-      ripId2 :: DiscID,
+      ripId1  :: DiscID,
+      ripId2  :: DiscID,
       ripCddb :: DiscID,
-      ripCrc :: [(CRC,CRC)]
+      ripCrc  :: [(CRC,CRC)]
     }
 
 matchPressing :: ArData -> RipHash -> (Maybe [Word8], Maybe [Word8])
@@ -186,10 +186,10 @@ crcFromTo m n = crc m 0
 {-
 crcFromTo :: Int -> Int -> [Sample] -> CRC
 crcFromTo m n = snd . foldl' step (m,0) . take (n-m+1)
-    where 
+    where
       step (!l,!acc) y = (l+1,acc + (toEnum l)*y)
 -}
-              
+
 
 samplesPerSector :: Num a => a
 samplesPerSector = 588
