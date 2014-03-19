@@ -29,6 +29,7 @@ Description:
 
 Category:            Sound
 Extra-Source-Files:  .stylish-haskell.yaml
+                     CHANGELOG.md
 
 Source-Repository head
   Type:      git
