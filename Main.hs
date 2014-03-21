@@ -23,12 +23,12 @@ exeName :: String
 exeName = "flaccuraterip"
 
 version :: Version
-version = Version [0,2] []
+version = Version [0,2,1] []
 
 intro :: String
 intro = progName ++ " " ++ showVersion version ++
         "\n\
-        \Copyright (C) 2012 Nicola Squartini.\n\
+        \Copyright (C) 2012-2014 Nicola Squartini.\n\
         \License GPLv3+: GNU GPL version 3 or \
         \later <http://gnu.org/licenses/gpl.html>\n\
         \This is free software: you are free to change and redistribute it.\n\
