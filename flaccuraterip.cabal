@@ -19,7 +19,7 @@ Description:
   @trackNN.flac@. Open a shell in the directory containing the FLAC files, and
   run:
   .
-  >>> flaccuraterip track01.flac track02.flac ... trackNN.flac
+  >$ flaccuraterip track01.flac track02.flac ... trackNN.flac
   .
   If a pressing of this CD is present in the AccurateRip™ database,
   @flaccuraterip@ will output the ripping accuracy for each track. If the CD was
