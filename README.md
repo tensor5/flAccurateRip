@@ -2,7 +2,7 @@ Introduction
 ------------
 
 *flAccurateRip* is a command line tool to verify the accuracy of FLAC files
-ripped form CD, using the information contained in the AccurateRip™ database
+ripped from CD, using the information contained in the AccurateRip™ database
 about other rips of the same CD.
 
 Usage
