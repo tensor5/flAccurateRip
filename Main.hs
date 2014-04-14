@@ -131,7 +131,8 @@ pipeFlacs xs = do
                                    CreatePipe
                                    Inherit
                                    True
-                                   True)
+                                   True
+                                   False)
   return b
 
 showAccuracy :: ArData -> RipHash -> IO ()
