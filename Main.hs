@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-
 import           CD.AccurateRip
 import           CD.CDDB
 import           Control.DeepSeq
@@ -7,62 +5,51 @@ import           Control.Monad
 import           Data.Binary
 import           Data.Bits
 import           Data.String
-import           Data.Version
 import           Network.HTTP
-import           System.Console.CmdArgs
+import           Options.Applicative
 import           System.Environment
 import           System.Exit
 import           System.IO
 import           System.Process
 
 
-progName :: String
-progName = "flAccurateRip"
-
-exeName :: String
-exeName = "flaccuraterip"
-
-version :: Version
-version = Version [0,2,1] []
-
-intro :: String
-intro = progName ++ " " ++ showVersion version ++
-        "\n\
-        \Copyright (C) 2012-2014 Nicola Squartini.\n\
-        \License GPLv3+: GNU GPL version 3 or \
-        \later <http://gnu.org/licenses/gpl.html>\n\
-        \This is free software: you are free to change and redistribute it.\n\
-        \There is NO WARRANTY, to the extent permitted by law."
+bugReport :: String
+bugReport = "Report bugs to https://github.com/tensor5/flAccurateRip/issues"
 
 data Options = Options
     { optOffset    :: Int
     , opt30Samples :: Bool
     , optShowEntry :: Bool
+    , optVerbose   :: Bool
     , optFiles     :: [String]
-    } deriving (Data, Typeable)
+    }
 
-options :: Options
-options = Options { optOffset = def
-                    &= explicit
-                    &= opt "O"
-                    &= name "sample-offset"
-                    &= help "Set ripping offset to N"
-                    &= typ "N"
-                  , opt30Samples = False
-                    &= explicit
-                    &= name "with-30-samples-correction"
-                    &= help "Add 30 samples to the offset (use if the CD was \
-                            \ripped using the correct offset, which is 30 \
-                            \samples less than that in \
-                            \http://www.accuraterip.com/driveoffsets.htm)"
-                  , optShowEntry = False
-                    &= explicit
-                    &= name "show-database-entry"
-                    &= help "Show the AccurateRip database entry for this rip"
-                  , optFiles = def
-                    &= args
-                    &= typ "FLAC FILES"
-                  }
+options :: Parser Options
+options = Options
+          <$> option (short 'o'
+                      <> long "sample-offset"
+                      <> metavar "N"
+                      <> value 0
+                      <> help "Set ripping offset to N"
+                     )
+          <*> switch (short 'c'
+                      <> long "with-30-samples-correction"
+                      <> help "Add 30 samples to the offset (use if the CD was \
+                              \ripped using the correct offset, which is 30 \
+                              \samples less than that in \
+                              \http://www.accuraterip.com/driveoffsets.htm)"
+                     )
+          <*> switch (short 's'
+                      <> long "show-database-entry"
+                      <> help "Show the AccurateRip database entry for this rip"
+                     )
+          <*> switch (short 'v'
+                      <> long "verbose"
+                      <> help "Be verbose"
+                     )
+          <*> some (argument str $
+                    metavar "track01.flac track02.flac ... trackNN.flac"
+                   )
 
 
 lengthsToOffsets :: Num a => [a] -> [a]
@@ -150,21 +137,14 @@ showRes x y = do
                       show c2 ++ " (" ++ show s2 ++ ")")
             sR (i+1) cs ss
 
-noInput :: [String] -> IO ()
-noInput [] = do
-  prog <- getProgName
-  putStrLn (prog ++ ": no input files")
-  exitFailure
-noInput _ = return ()
-
 main :: IO ()
 main = do
-  opts <- cmdArgs (options &= program exeName &= summary intro &= verbosity)
+  opts <- execParser $ info (helper <*> options) (briefDesc <> footer bugReport)
   let flaclist = optFiles opts
-  noInput flaclist
+      verbose  = optVerbose opts
   list <- getOffsetsFromFlacs flaclist
   putStr "Connecting to AccurateRip database"
-  whenLoud $ putStr (" ("  ++ arUrl list ++ ")")
+  when verbose $ putStr (" ("  ++ arUrl list ++ ")")
   putStr "..."
   hFlush stdout
   res <- simpleHTTP (getRequest $ arUrl list)
@@ -185,14 +165,14 @@ main = do
                        putStrLn $ showArData ardata
          let offset = optOffset opts + 30 * fromEnum (opt30Samples opts)
          putStr "Computing track checksums from input files"
-         whenLoud $ putStr (" (using " ++ show offset ++ " samples offset)")
+         when verbose $ putStr (" (using " ++ show offset ++ " samples offset)")
          putStrLn "..."
          a <- pipeFlacs flaclist
          hSetBinaryMode a True
-         str <- hGetContents a
+         fl <- hGetContents a
          let cs = listPairCrcs offset
                   (map (\n -> samplesPerSector * n) (offsetsToLengths list))
-                  (stringToWord32List str)
+                  (stringToWord32List fl)
          (showAccuracy ardata .
           RipHash (discId1 list) (discId2 list) (cddbDiscId list))
            $!! cs
