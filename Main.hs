@@ -5,6 +5,7 @@ import           Control.Monad
 import           Data.Binary
 import           Data.Bits
 import           Data.String
+import           Data.Version
 import           Network.HTTP
 import           Options.Applicative
 import           System.Environment
@@ -12,6 +13,20 @@ import           System.Exit
 import           System.IO
 import           System.Process
 
+progName :: String
+progName = "flAccurateRip"
+
+version :: Version
+version = Version [0,3,0] []
+
+intro :: String
+intro = progName ++ " " ++ showVersion version ++
+        "\n\
+        \Copyright (C) 2012-2014 Nicola Squartini.\n\
+        \License GPLv3+: GNU GPL version 3 or \
+        \later <http://gnu.org/licenses/gpl.html>\n\
+        \This is free software: you are free to change and redistribute it.\n\
+        \There is NO WARRANTY, to the extent permitted by law."
 
 bugReport :: String
 bugReport = "Report bugs to: <https://github.com/tensor5/flAccurateRip/issues>"
@@ -51,6 +66,9 @@ options = Options
                     metavar "track01.flac track02.flac ... trackNN.flac"
                    )
 
+versionOption :: Parser (a -> a)
+versionOption = infoOption intro (long "version"
+                                  <> help "Show version information and exit")
 
 lengthsToOffsets :: Num a => [a] -> [a]
 lengthsToOffsets = scanl1 (+)
@@ -139,7 +157,8 @@ showRes x y = do
 
 main :: IO ()
 main = do
-  opts <- execParser $ info (helper <*> options) (briefDesc <> footer bugReport)
+  opts <- execParser $ info (helper <*> versionOption <*> options)
+          (briefDesc <> footer bugReport)
   let flaclist = optFiles opts
       verbose  = optVerbose opts
   list <- getOffsetsFromFlacs flaclist
