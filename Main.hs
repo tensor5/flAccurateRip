@@ -14,7 +14,7 @@ import           System.Process
 
 
 bugReport :: String
-bugReport = "Report bugs to https://github.com/tensor5/flAccurateRip/issues"
+bugReport = "Report bugs to: <https://github.com/tensor5/flAccurateRip/issues>"
 
 data Options = Options
     { optOffset    :: Int
