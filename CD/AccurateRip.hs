@@ -2,13 +2,14 @@
 
 module CD.AccurateRip where
 
-import           CD.CDDB
 import           Control.Monad   (liftM)
 import           Data.Binary
 import           Data.Binary.Get
 import           Data.Binary.Put
 import           Data.Bits
 import           Data.List       (find)
+
+import           CD.CDDB
 
 type Sample = Word32
 

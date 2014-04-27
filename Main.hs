@@ -1,5 +1,3 @@
-import           CD.AccurateRip
-import           CD.CDDB
 import           Control.DeepSeq
 import           Control.Monad
 import           Data.Binary
@@ -12,6 +10,9 @@ import           System.Environment
 import           System.Exit
 import           System.IO
 import           System.Process
+
+import           CD.AccurateRip
+import           CD.CDDB
 
 progName :: String
 progName = "flAccurateRip"
