@@ -42,7 +42,7 @@ data Options = Options
 options :: Parser Options
 options = Options
           <$> option (short 'o'
-                      <> long "sample-offset"
+                      <> long "with-sample-offset"
                       <> metavar "N"
                       <> value 0
                       <> help "Set ripping offset to N"
