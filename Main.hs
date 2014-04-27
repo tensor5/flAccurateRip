@@ -46,7 +46,7 @@ options = Options
                       <> help "Add 30 samples to the offset (use if the CD was \
                               \ripped using the correct offset, which is 30 \
                               \samples less than that in \
-                              \http://www.accuraterip.com/driveoffsets.htm)"
+                              \<http://www.accuraterip.com/driveoffsets.htm>)"
                      )
           <*> option (short 'o'
                       <> long "with-sample-offset"
@@ -165,7 +165,7 @@ main = do
       verbose  = optVerbose opts
   list <- getOffsetsFromFlacs flaclist
   putStr "Connecting to AccurateRip database"
-  when verbose $ putStr (" ("  ++ arUrl list ++ ")")
+  when verbose $ putStr (" (<"  ++ arUrl list ++ ">)")
   putStr "..."
   hFlush stdout
   res <- simpleHTTP (getRequest $ arUrl list)
