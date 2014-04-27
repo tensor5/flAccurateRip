@@ -17,6 +17,6 @@ run:
 If a pressing of this CD is present in the AccurateRip™ database,
 `flaccuraterip` will output the ripping accuracy for each track. If the CD was
 ripped without setting the drive offset, you should use the flag
-`--sample-offset=N`, where N is the offset indicated
+`--with-sample-offset=N`, where N is the offset indicated
 [here](http://accuraterip.com/driveoffsets.htm
 "http://accuraterip.com/driveoffsets.htm") for your drive.
