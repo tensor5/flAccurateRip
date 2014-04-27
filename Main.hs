@@ -158,7 +158,9 @@ showRes x y = do
 main :: IO ()
 main = do
   opts <- execParser $ info (helper <*> versionOption <*> options)
-          (briefDesc <> footer bugReport)
+          (fullDesc
+           <> progDesc "Verify the given FLAC files"
+           <> footer bugReport)
   let flaclist = optFiles opts
       verbose  = optVerbose opts
   list <- getOffsetsFromFlacs flaclist
