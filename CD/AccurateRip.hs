@@ -2,7 +2,6 @@
 
 module CD.AccurateRip where
 
-import           Control.Monad   (liftM)
 import           Data.Binary
 import           Data.Binary.Get
 import           Data.Binary.Put
@@ -75,7 +74,7 @@ newtype ArData = ArData {unArData :: [ArCrcEntry]}
 
 instance Binary ArData where
     put (ArData ents) = mapM_ put ents
-    get = liftM ArData getList
+    get = fmap ArData getList
         where getList = do b <- isEmpty
                            if b
                              then return []

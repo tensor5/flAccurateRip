@@ -3,7 +3,6 @@
 module CD.CDDB where
 
 import           Control.DeepSeq
-import           Control.Monad   (liftM)
 import           Data.Binary
 import           Data.Binary.Get
 import           Data.Binary.Put
@@ -15,7 +14,7 @@ newtype DiscID = DiscID Word32
 
 instance Binary DiscID where
     put (DiscID w) = putWord32le w
-    get = liftM DiscID getWord32le
+    get = fmap DiscID getWord32le
 
 instance Show DiscID where
     show (DiscID w) =
