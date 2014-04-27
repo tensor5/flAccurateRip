@@ -40,7 +40,7 @@ Source-Repository head
 Source-Repository this
   Type:      git
   Location:  git://github.com/tensor5/flAccurateRip.git
-  Tag:       v0.2.1
+  Tag:       v0.3.0
 
 Executable flaccuraterip
   Build-Depends:  base                  == 4.*,
