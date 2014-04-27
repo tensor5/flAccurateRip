@@ -32,8 +32,8 @@ bugReport :: String
 bugReport = "Report bugs to: <https://github.com/tensor5/flAccurateRip/issues>"
 
 data Options = Options
-    { optOffset    :: Int
-    , opt30Samples :: Bool
+    { opt30Samples :: Bool
+    , optOffset    :: Int
     , optShowEntry :: Bool
     , optVerbose   :: Bool
     , optFiles     :: [String]
@@ -41,18 +41,18 @@ data Options = Options
 
 options :: Parser Options
 options = Options
-          <$> option (short 'o'
-                      <> long "with-sample-offset"
-                      <> metavar "N"
-                      <> value 0
-                      <> help "Set ripping offset to N"
-                     )
-          <*> switch (short 'c'
+          <$> switch (short 'c'
                       <> long "with-30-samples-correction"
                       <> help "Add 30 samples to the offset (use if the CD was \
                               \ripped using the correct offset, which is 30 \
                               \samples less than that in \
                               \http://www.accuraterip.com/driveoffsets.htm)"
+                     )
+          <*> option (short 'o'
+                      <> long "with-sample-offset"
+                      <> metavar "N"
+                      <> value 0
+                      <> help "Set ripping offset to N"
                      )
           <*> switch (short 's'
                       <> long "show-database-entry"
