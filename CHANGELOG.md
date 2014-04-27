@@ -1,4 +1,23 @@
-Version 0.2.1
--------------
+Version 0.3.0 (2014-04-27)
+--------------------------
+
+- Replace `cmdargs` with `optparse-applicative` for parsing command line.
+- Improve description and help message.
+
+Version 0.2.1 (2014-03-21)
+--------------------------
 
 - Clean up code.
+
+Version 0.2 (2012-11-08)
+------------------------
+
+- New option "--show-database-entry" to show the AccurateRip database entry of
+  the rip.
+- Improve description.
+- Minor code changes.
+
+Version 0.1 (2012-11-03)
+------------------------
+
+- Initial release.
