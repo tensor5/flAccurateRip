@@ -8,6 +8,7 @@ Copyright:      © 2012-2014 Nicola Squartini
 Author:         Nicola Squartini
 Maintainer:     Nicola Squartini <tensor5@gmail.com>
 Homepage:       http://noaxiom.org/flAccurateRip
+Bug-Reports:    https://github.com/tensor5/flAccurateRip/issues
 Synopsis:       Verify FLAC files ripped form CD using AccurateRip™
 Description:
 
