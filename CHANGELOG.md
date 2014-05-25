@@ -1,3 +1,8 @@
+Version 0.3.1 (2014-05-25)
+--------------------------
+
+- Allow dependency on `optparse-applicative` 0.9.
+
 Version 0.3.0 (2014-04-27)
 --------------------------
 
@@ -12,7 +17,7 @@ Version 0.2.1 (2014-03-21)
 Version 0.2 (2012-11-08)
 ------------------------
 
-- New option "--show-database-entry" to show the AccurateRip database entry of
+- New option `--show-database-entry` to show the AccurateRip database entry of
   the rip.
 - Improve description.
 - Minor code changes.
