@@ -18,7 +18,7 @@ progName :: String
 progName = "flAccurateRip"
 
 version :: Version
-version = Version [0,3,0] []
+version = Version [0,3,1] []
 
 intro :: String
 intro = progName ++ " " ++ showVersion version ++
