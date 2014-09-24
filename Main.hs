@@ -49,12 +49,12 @@ options = Options
                               \samples less than that in \
                               \<http://www.accuraterip.com/driveoffsets.htm>)"
                      )
-          <*> option (short 'o'
-                      <> long "with-sample-offset"
-                      <> metavar "N"
-                      <> value 0
-                      <> help "Set ripping offset to N"
-                     )
+          <*> option auto (short 'o'
+                           <> long "with-sample-offset"
+                           <> metavar "N"
+                           <> value 0
+                           <> help "Set ripping offset to N"
+                          )
           <*> switch (short 's'
                       <> long "show-database-entry"
                       <> help "Show the AccurateRip database entry for this rip"
