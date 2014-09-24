@@ -14,11 +14,10 @@ import           System.Process
 import           CD.AccurateRip
 import           CD.CDDB
 
+import           Paths_flaccuraterip
+
 progName :: String
 progName = "flAccurateRip"
-
-version :: Version
-version = Version [0,3,1] []
 
 intro :: String
 intro = progName ++ " " ++ showVersion version ++
