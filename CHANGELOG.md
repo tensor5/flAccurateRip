@@ -1,3 +1,8 @@
+Version 0.3.3 (2014-10-10)
+--------------------------
+
+- Allow dependency on `optparse-applicative` 0.11.
+
 Version 0.3.2 (2014-09-24)
 --------------------------
 
