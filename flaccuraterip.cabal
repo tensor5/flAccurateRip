@@ -4,7 +4,7 @@ Cabal-Version:  >= 1.10
 Build-Type:     Simple
 License:        GPL-3
 License-File:   LICENSE
-Copyright:      © 2012-2014 Nicola Squartini
+Copyright:      © 2012-2015 Nicola Squartini
 Author:         Nicola Squartini
 Maintainer:     Nicola Squartini <tensor5@gmail.com>
 Homepage:       http://noaxiom.org/flAccurateRip
