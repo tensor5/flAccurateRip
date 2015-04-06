@@ -160,12 +160,12 @@ discId1 = DiscID . toEnum . sum
 
 discId2 :: [Int] -> DiscID
 discId2 xs = DiscID $ toEnum $ sum $ zipWith (*) (1:xs) [1..n+1]
-	where n = length xs
+    where n = length xs
 
 
 arUrl :: [Int] -> String
 arUrl xs = "http://www.accuraterip.com/accuraterip/" ++
-      	   (show (discId1 xs)!!7) : '/' :
+           (show (discId1 xs)!!7) : '/' :
            (show (discId1 xs)!!6) : '/' :
            (show (discId1 xs)!!5) : "/dBAR-" ++
            addZeros 3 (show (length xs)) ++
@@ -174,8 +174,8 @@ arUrl xs = "http://www.accuraterip.com/accuraterip/" ++
            '-' : show (cddbDiscId xs) ++
            ".bin"
     where addZeros n s = if length s >= n
-	       		 then s
-			 else addZeros n ('0':s)
+                         then s
+                         else addZeros n ('0':s)
 
 {-
 crcFromTo :: Int -> Int -> [Sample] -> CRC

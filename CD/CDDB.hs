@@ -40,6 +40,6 @@ cddbDiscId xs = DiscID $ fromIntegral $
                         255
                        ) 24
     where sumDigits 0 = 0
-	  sumDigits n = let (q,r) = quotRem n 10
+          sumDigits n = let (q,r) = quotRem n 10
                         in r + sumDigits q
 
