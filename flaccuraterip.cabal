@@ -1,5 +1,5 @@
 Name:           flaccuraterip
-Version:        0.3.4
+Version:        0.3.5
 Cabal-Version:  >= 1.10
 Build-Type:     Simple
 License:        GPL-3
@@ -40,7 +40,7 @@ Source-Repository head
 Source-Repository this
   Type:      git
   Location:  git://github.com/tensor5/flAccurateRip.git
-  Tag:       v0.3.4
+  Tag:       v0.3.5
 
 Executable flaccuraterip
   Default-Language:  Haskell2010
