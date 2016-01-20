@@ -1,3 +1,9 @@
+Version 0.3.5 (2016-01-20)
+--------------------------
+
+- Allow dependency on `HTTP` 4000.3.
+- Allow dependency on `optparse-applicative` 0.12.
+
 Version 0.3.4 (2015-04-06)
 --------------------------
 
