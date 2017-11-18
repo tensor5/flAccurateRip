@@ -143,7 +143,8 @@ pipeFlacs xs = do
                                    False
                                    False
                                    Nothing
-                                   Nothing)
+                                   Nothing
+                                   False)
   return b
 
 showAccuracy :: ArData -> RipHash -> IO ()
