@@ -1,3 +1,9 @@
+Version 0.3.8 (2017-11-18)
+--------------------------
+
+- Allow dependency on `optparse-applicative` 0.14.
+- Require `process` >= 1.5.
+
 Version 0.3.7 (2016-11-19)
 --------------------------
 
