@@ -52,4 +52,4 @@ Executable flaccuraterip
                      process               >= 1.5 && < 1.7
   GHC-Options:       -Wall
   Main-Is:           Main.hs
-  Other-Modules:     CD.CDDB, CD.AccurateRip
+  Other-Modules:     CD.CDDB, CD.AccurateRip, Paths_flaccuraterip
