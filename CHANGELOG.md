@@ -1,3 +1,8 @@
+Version 0.3.9 (2020-06-10)
+--------------------------
+
+- Allow dependency on `optparse-applicative` 0.15.
+
 Version 0.3.8 (2017-11-18)
 --------------------------
 
