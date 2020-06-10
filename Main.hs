@@ -2,7 +2,6 @@ import           Control.DeepSeq
 import           Control.Monad
 import           Data.Binary
 import           Data.Bits
-import           Data.Monoid
 import           Data.String
 import           Data.Version
 import           Network.HTTP
