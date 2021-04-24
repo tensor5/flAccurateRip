@@ -5,6 +5,12 @@ Introduction
 ripped from CD, using the information contained in the AccurateRip™ database
 about other rips of the same CD.
 
+Building
+--------
+
+    $ cabal update
+    $ cabal install
+
 Usage
 -----
 
