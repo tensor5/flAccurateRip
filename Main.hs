@@ -4,6 +4,7 @@ import           Data.Binary
 import           Data.Bits
 import           Data.String
 import           Data.Version
+import           Data.Monoid
 import           Network.HTTP
 import           Options.Applicative
 import           System.Environment
